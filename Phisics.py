@@ -98,13 +98,13 @@ def modeling():
     canv.delete("all")
     move_central(0.05)
     move_ball()
-    acceleration(0.001, 10)
+    acceleration(0.01, 10)
     rendering()
     root.after(10, modeling)
 
 
 ball = []
-yes(12)
+yes(120)
 natch(10, 10)
 modeling()
 print(len(ball))
