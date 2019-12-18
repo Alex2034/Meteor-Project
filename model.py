@@ -21,8 +21,8 @@ def line_masiv(n):  # Создание n нитей без шариков, со�
     for i in range(n):
         membrane.append([])
         
-def zapolnenie_membrane(m): # на каждую нити создается по m шариков
-    for i in range(m):
+def zapolnenie_membrane(n, m): # на каждую нити создается по m шариков
+    for i in range(n):
         masiv = []
         for j in range(m):
             masiv.append(Point())   
@@ -188,27 +188,37 @@ def acceleration(parameter, l_0, i_c, j_c):
                 gamma = parameter * (1 - l_0 / length)
                 c.Vx += gamma * (environment[k].x - c.x) 
                 c.Vy += gamma * (environment[k].y - c.y)
-                c.Vx += gamma * (environment[k].z - c.z)
+                c.Vz += gamma * (environment[k].z - c.z)
 
-def rendering(): # отрисовка линии
+'''def rendering(): # отрисовка линии
     for i in range(len(membrane)):
         for j in range(0, len(membrane[i]) - 1):
             canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i][j+1].x, membrane[i][j+1].y)
         for j in range(len(membrane[i])):
             for i in range(len(membrane) - 1):
                 canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i+1][j].x, membrane[i+1][j].y)
+'''
+def rendering(): # отрисовка линии
+    for i in range(len(membrane)):
+        for j in range(0, len(membrane[i]) - 1):
+            canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i][j+1].x, membrane[i][j+1].z)
+        for j in range(len(membrane[i])):
+            for i in range(len(membrane) - 1):
+                canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i+1][j].x, membrane[i+1][j].z)
+
+
 
 def modeling():
     canv.delete("all")
-    centrel(0, 0, 1, 3, 3)
+    centrel(0, 2, 0.25, 4, 5)
     move_point()
-    acceleration(0.2, 100, 3, 3)
+    acceleration(0.7, 90, 4, 5)
     rendering()
     root.after(20, modeling)
 
 membrane = []
-line_masiv(5)
-zapolnenie_membrane(5)
-entry_conditions (100, 100, 100, 0, 0, 0)
+line_masiv(10)
+zapolnenie_membrane(10, 7)
+entry_conditions (90, 90, 90, 0, 0, 0)
 modeling()
 root.mainloop()
