@@ -1,6 +1,9 @@
 from tkinter import *
 import math
 import time
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 root = Tk()
 root.geometry('1000x700')
@@ -36,9 +39,9 @@ def entry_conditions (x_0, y_0, z_0, Vx_0, Vy_0, Vz_0):
     '''
     for i in range(len(membrane)):
         for j in range(len(membrane[i])):
-            membrane[i][j].x = (i+1) * x_0
-            membrane[i][j].y = (j+1) * y_0
-            membrane[i][j].z = z_0
+            membrane[i][j].x = (i+1) * x_0 + 50
+            membrane[i][j].y = (j+1) * y_0 + 50
+            membrane[i][j].z = z_0 + 50
             membrane[i][j].Vx = Vx_0
             membrane[i][j].Vy = Vy_0
             membrane[i][j].Vz = Vz_0
@@ -190,35 +193,77 @@ def acceleration(parameter, l_0, i_c, j_c):
                 c.Vy += gamma * (environment[k].y - c.y)
                 c.Vz += gamma * (environment[k].z - c.z)
 
-'''def rendering(): # отрисовка линии
+def rendering(): # отрисовка линии
     for i in range(len(membrane)):
         for j in range(0, len(membrane[i]) - 1):
             canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i][j+1].x, membrane[i][j+1].y)
         for j in range(len(membrane[i])):
             for i in range(len(membrane) - 1):
                 canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i+1][j].x, membrane[i+1][j].y)
-'''
-def rendering(): # отрисовка линии
+
+'''def rendering(): # отрисовка линии
     for i in range(len(membrane)):
         for j in range(0, len(membrane[i]) - 1):
             canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i][j+1].x, membrane[i][j+1].z)
         for j in range(len(membrane[i])):
             for i in range(len(membrane) - 1):
-                canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i+1][j].x, membrane[i+1][j].z)
+                canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i+1][j].x, membrane[i+1][j].z)'''
 
 
+def grafic():
+    x = []
+    y = []
+    z = []
+    s = []
+    for i in range(len(membrane)):
+        for j in range(len(membrane[i])):
+            x.append(membrane[i][j].x)
+            y.append(membrane[i][j].y)
+            z.append(membrane[i][j].z)
+            s.append(2)
+    print(x, y, z)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot_wireframe(x, y, z)
+    plt.show()
+
+def rotation(ux, uy, uz):
+     for i in range(len(membrane)):
+        for j in range(len(membrane[i])):
+            '''membrane[i][j].x = membrane[i][j].x * (np.cos(uz) * np.cos(uy) + np.sin(uz) * np.cos(uy) - np.sin(uy))
+            membrane[i][j].y = membrane[i][j].y * (np.cos(uz) * np.sin(uy) * np.sin(ux) - np.sin(uz) * np.cos(ux) + np.sin(uz) * np.sin(uy) * np.sin(ux) + np.cos(uz) * np.cos(ux) + np.cos(uy) * np.sin(ux))
+            membrane[i][j].z = membrane[i][j].z * (np.cos(uz) * np.sin(uy) * np.cos(ux) + np.sin(uz) * np.sin(ux) + np.sin(uz) * np.sin(uy) * np.cos(ux) - np.cos(uz) * np.sin(ux) + np.cos(uy) * np.cos(ux))
+            
+            membrane[i][j].x *= 1
+            membrane[i][j].y *= np.cos(ux) + np.sin(ux)
+            membrane[i][j].z *= np.cos(ux) - np.sin(ux)
+
+            membrane[i][j].x *= np.cos(uy) - np.sin(uy)
+            membrane[i][j].y *= 1
+            membrane[i][j].z *= np.cos(uy) + np.sin(uy)
+
+            membrane[i][j].x *= np.cos(uz) + np.sin(uz)
+            membrane[i][j].y *= np.cos(uz) - np.sin(uz)
+            membrane[i][j].z *= 1
+            '''
+            membrane[i][j].x *= (np.cos(uz) + np.sin(uz)) * (np.cos(uy) - np.sin(uy))
+            membrane[i][j].y *= (np.cos(uz) - np.sin(uz)) * (np.cos(ux) + np.sin(ux))
+            membrane[i][j].z *= (np.cos(uy) + np.sin(uy)) * (np.cos(ux) - np.sin(ux))
 
 def modeling():
     canv.delete("all")
-    centrel(0, 2, 0.25, 4, 5)
+    centrel(0, 0, 0.25, 4, 5)
     move_point()
     acceleration(0.7, 90, 4, 5)
+    rotation(0, 0, 0.2)
     rendering()
-    root.after(20, modeling)
+    rotation(0, 0, -0.2)
+    root.after(2000, modeling)
 
 membrane = []
-line_masiv(10)
-zapolnenie_membrane(10, 7)
+line_masiv(5)
+zapolnenie_membrane(5, 5)
 entry_conditions (90, 90, 90, 0, 0, 0)
 modeling()
+#grafic()
 root.mainloop()
