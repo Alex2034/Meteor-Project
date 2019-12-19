@@ -230,39 +230,43 @@ def grafic():
 def rotation(ux, uy, uz):
      for i in range(len(membrane)):
         for j in range(len(membrane[i])):
-            '''membrane[i][j].x = membrane[i][j].x * (np.cos(uz) * np.cos(uy) + np.sin(uz) * np.cos(uy) - np.sin(uy))
-            membrane[i][j].y = membrane[i][j].y * (np.cos(uz) * np.sin(uy) * np.sin(ux) - np.sin(uz) * np.cos(ux) + np.sin(uz) * np.sin(uy) * np.sin(ux) + np.cos(uz) * np.cos(ux) + np.cos(uy) * np.sin(ux))
-            membrane[i][j].z = membrane[i][j].z * (np.cos(uz) * np.sin(uy) * np.cos(ux) + np.sin(uz) * np.sin(ux) + np.sin(uz) * np.sin(uy) * np.cos(ux) - np.cos(uz) * np.sin(ux) + np.cos(uy) * np.cos(ux))
+            '''
+            membrane[i][j].x = membrane[i][j].x * (np.cos(uz) * np.cos(uy) + membrane[i][j].y * np.sin(uz) * np.cos(uy) - membrane[i][j].z * np.sin(uy))
+            membrane[i][j].y = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.sin(ux) - membrane[i][j].y * np.sin(uz) * np.cos(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.sin(ux) + np.cos(uz) * np.cos(ux) + np.cos(uy) * np.sin(ux))
+            membrane[i][j].z = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.cos(ux) + membrane[i][j].y * np.sin(uz) * np.sin(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.cos(ux) - np.cos(uz) * np.sin(ux) + np.cos(uy) * np.cos(ux))
+            '''
             
             membrane[i][j].x *= 1
-            membrane[i][j].y *= np.cos(ux) + np.sin(ux)
-            membrane[i][j].z *= np.cos(ux) - np.sin(ux)
+            membrane[i][j].y = np.cos(ux)*membrane[i][j].y - np.sin(ux)*membrane[i][j].z
+            membrane[i][j].z = np.cos(ux)*membrane[i][j].z + np.sin(ux)*membrane[i][j].y
 
-            membrane[i][j].x *= np.cos(uy) - np.sin(uy)
+            membrane[i][j].x = membrane[i][j].x * np.cos(uy) + membrane[i][j].z * np.sin(uy)
             membrane[i][j].y *= 1
-            membrane[i][j].z *= np.cos(uy) + np.sin(uy)
+            membrane[i][j].z = membrane[i][j].z * np.cos(uy) - membrane[i][j].x * np.sin(uy)
 
-            membrane[i][j].x *= np.cos(uz) + np.sin(uz)
-            membrane[i][j].y *= np.cos(uz) - np.sin(uz)
+            membrane[i][j].x = membrane[i][j].x * np.cos(uz) - membrane[i][j].y * np.sin(uz)
+            membrane[i][j].y = membrane[i][j].z * np.cos(uz) + membrane[i][j].y * np.sin(uz)
             membrane[i][j].z *= 1
+            
             '''
             membrane[i][j].x *= (np.cos(uz) + np.sin(uz)) * (np.cos(uy) - np.sin(uy))
             membrane[i][j].y *= (np.cos(uz) - np.sin(uz)) * (np.cos(ux) + np.sin(ux))
             membrane[i][j].z *= (np.cos(uy) + np.sin(uy)) * (np.cos(ux) - np.sin(ux))
+            '''
 
 def modeling():
     canv.delete("all")
-    centrel(0, 0, 0.25, 4, 5)
+    centrel(0, 0, 0.25, 4, 4)
     move_point()
-    acceleration(0.7, 90, 4, 5)
-    rotation(0, 0, 0.2)
+    acceleration(0.7, 90, 4, 4)
+    #rotation(0, 0, 0)
     rendering()
-    rotation(0, 0, -0.2)
-    root.after(2000, modeling)
+    #rotation(0, 0, 0)
+    root.after(20, modeling)
 
 membrane = []
-line_masiv(5)
-zapolnenie_membrane(5, 5)
+line_masiv(7)
+zapolnenie_membrane(7, 7)
 entry_conditions (90, 90, 90, 0, 0, 0)
 modeling()
 #grafic()
