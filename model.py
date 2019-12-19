@@ -32,6 +32,17 @@ def zapolnenie_membrane(n, m): # на каждую нити создается �
         membrane[i] = masiv
 
 
+def line_otrisovka(n):  # Создание n нитей без шариков, создание двумерного масива
+    for i in range(n):
+        otrisovka.append([])
+
+def zapolnenie_otrisovka (n, m): # на каждую нити создается по m шариков
+    for i in range(n):
+        masiv = []
+        for j in range(m):
+            masiv.append(Point())   
+        otrisovka[i] = masiv
+
 
 def entry_conditions (x_0, y_0, z_0, Vx_0, Vy_0, Vz_0):
     '''
@@ -194,20 +205,20 @@ def acceleration(parameter, l_0, i_c, j_c):
                 c.Vz += gamma * (environment[k].z - c.z)
 
 def rendering(): # отрисовка линии
-    for i in range(len(membrane)):
-        for j in range(0, len(membrane[i]) - 1):
-            canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i][j+1].x, membrane[i][j+1].y)
-        for j in range(len(membrane[i])):
-            for i in range(len(membrane) - 1):
-                canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i+1][j].x, membrane[i+1][j].y)
+    for i in range(len(otrisovka)):
+        for j in range(0, len(otrisovka[i]) - 1):
+            canv.create_line(otrisovka[i][j].x, otrisovka[i][j].y, otrisovka[i][j+1].x, otrisovka[i][j+1].y)
+        for j in range(len(otrisovka[i])):
+            for i in range(len(otrisovka) - 1):
+                canv.create_line(otrisovka[i][j].x, otrisovka[i][j].y, otrisovka[i+1][j].x, otrisovka[i+1][j].y)
 
 '''def rendering(): # отрисовка линии
-    for i in range(len(membrane)):
-        for j in range(0, len(membrane[i]) - 1):
-            canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i][j+1].x, membrane[i][j+1].z)
-        for j in range(len(membrane[i])):
-            for i in range(len(membrane) - 1):
-                canv.create_line(membrane[i][j].x, membrane[i][j].z, membrane[i+1][j].x, membrane[i+1][j].z)'''
+    for i in range(len(otrisovka)):
+        for j in range(0, len(otrisovka[i]) - 1):
+            canv.create_line(otrisovka[i][j].x, otrisovka[i][j].z, otrisovka[i][j+1].x, otrisovka[i][j+1].z)
+        for j in range(len(otrisovka[i])):
+            for i in range(len(otrisovka) - 1):
+                canv.create_line(otrisovka[i][j].x, otrisovka[i][j].z, otrisovka[i+1][j].x, otrisovka[i+1][j].z)'''
 
 
 def grafic():
@@ -241,7 +252,7 @@ def rotation(ux, uy, uz):
             a.x = membrane[i][j].x
             a.y = membrane[i][j].y
             a.z = membrane[i][j].z
-            print(membrane[i][j].x)
+            #print(membrane[i][j].x)
             
             b.x = a.x
             b.y = np.cos(ux) * a.y - np.sin(ux)* a.z
@@ -249,11 +260,11 @@ def rotation(ux, uy, uz):
             c.x = b.x * np.cos(uy) + b.z * np.sin(uy)
             c.y = b.y
             c.z = b.z * np.cos(uy) - b.x * np.sin(uy)
-            membrane[i][j].x = c.x * np.cos(uz) - c.y * np.sin(uz)
-            membrane[i][j].y = c.z * np.cos(uz) + c.y * np.sin(uz)
-            membrane[i][j].z = c.z
+            otrisovka[i][j].x = c.x * np.cos(uz) - c.y * np.sin(uz)
+            otrisovka[i][j].y = c.z * np.cos(uz) + c.y * np.sin(uz)
+            otrisovka[i][j].z = c.z
 
-            print(a.x, b.x, c.x, membrane[i][j].x)
+            #print(a.x, b.x, c.x, membrane[i][j].x)
             
             
             '''
@@ -267,13 +278,15 @@ def modeling():
     centrel(0, 0, 0.25, 4, 4)
     move_point()
     acceleration(0.7, 90, 4, 4)
-    rotation(0.5, 0.5, 0.5)
+    rotation(0, 0.5, 0)
     rendering()
-    rotation(-0.5, -0.5, -0.5)
     root.after(20, modeling)
+
 
 membrane = []
 otrisovka = []
+line_otrisovka(7)
+zapolnenie_otrisovka(7, 7)
 line_masiv(7)
 zapolnenie_membrane(7, 7)
 entry_conditions (90, 90, 90, 0, 0, 0)
