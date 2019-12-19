@@ -198,8 +198,8 @@ def rotation(ux, uy, uz):
             a.y = membrane[i][j].y
             a.z = membrane[i][j].z
             b.x = a.x
-            b.y = np.cos(ux) * a.y - np.sin(ux)* a.z
-            b.z = np.cos(ux) * a.z + np.sin(ux)* a.y
+            b.y = np.cos(ux) * a.y - np.sin(ux) * a.z
+            b.z = np.cos(ux) * a.z + np.sin(ux) * a.y
             c.x = b.x * np.cos(uy) + b.z * np.sin(uy)
             c.y = b.y
             c.z = b.z * np.cos(uy) - b.x * np.sin(uy)
