@@ -1,6 +1,5 @@
 from tkinter import *
 import math
-import time
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -10,98 +9,82 @@ root.geometry('1000x700')
 canv = Canvas(root, width=800, height=600, bg='white')
 canv.pack(fill=BOTH, expand=1)
 
+
 class Point:
-    def __init__(self):  # класс шарика
+    """
+    Class of junctions (further called points) of the web
+    """
+    def __init__(self):
+        """
+    x, y, z -- coordinates of a junction
+    vx, vy, vz -- velocity projections of a junction
+        """
         self.x = 0
         self.y = 0
         self.z = 0
-        self.Vx = 0
-        self.Vy = 0
-        self.Vz = 0
+        self.vx = 0
+        self.vy = 0
+        self.vz = 0
 
 
-def line_masiv(n):  # Создание n нитей без шариков, создание двумерного масива
+def starting_lines(n):
+    """
+    Creates n parallel "strings" in a list membrane
+    """
     for i in range(n):
         membrane.append([])
-        
-def zapolnenie_membrane(n, m): # на каждую нити создается по m шариков
+
+
+def filling_web(n, m):
+    """
+    Creates points between strings as class Point objects
+    """
     for i in range(n):
-        masiv = []
         for j in range(m):
-            masiv.append(Point())   
-        membrane[i] = masiv
+            membrane[i].append(Point())
 
 
-def line_otrisovka(n):  # Создание n нитей без шариков, создание двумерного масива
-    for i in range(n):
-        otrisovka.append([])
-
-def zapolnenie_otrisovka (n, m): # на каждую нити создается по m шариков
-    for i in range(n):
-        masiv = []
-        for j in range(m):
-            masiv.append(Point())   
-        otrisovka[i] = masiv
-
-
-def entry_conditions (x_0, y_0, z_0, Vx_0, Vy_0, Vz_0):
-    '''
-    initial conditions (coordinates and scorti) for each point
-    '''
+def entry_conditions(x_0, y_0, z_0, vx_0, vy_0, vz_0):
+    """
+    initial conditions (coordinates and velocities) for each joint
+    """
     for i in range(len(membrane)):
         for j in range(len(membrane[i])):
-            membrane[i][j].x = (i+1) * x_0 + 50
-            membrane[i][j].y = (j+1) * y_0 + 50
+            membrane[i][j].x = (i + 1) * x_0 + 50
+            membrane[i][j].y = (j + 1) * y_0 + 50
             membrane[i][j].z = z_0 + 50
-            membrane[i][j].Vx = Vx_0
-            membrane[i][j].Vy = Vy_0
-            membrane[i][j].Vz = Vz_0
-    '''for i in range(len(membrane)):
-        for j in range(len(membrane[i])):
-            masiv1 = []
-            mas = []
-            x = membrane[i][j].x
-            y = membrane[i][j].y
-            z = membrane[i][j].z
-            print(x, y, z)
-            mas.append(x)
-            mas.append(y)
-            mas.append(z)
-            masiv1.append(mas)
-            print(masiv1)'''
+            membrane[i][j].vx = vx_0
+            membrane[i][j].vy = vy_0
+            membrane[i][j].vz = vz_0
 
-def centrel(V_cx, V_cy, V_cz, i_c, j_c):
-    membrane[i_c - 1][j_c - 1].Vx = V_cx
-    membrane[i_c - 1][j_c - 1].Vy = V_cy
-    membrane[i_c - 1][j_c - 1].Vz = V_cz
+
+def central(v_cx, v_cy, v_cz, i_c, j_c):
+    membrane[i_c - 1][j_c - 1].vx = v_cx
+    membrane[i_c - 1][j_c - 1].vy = v_cy
+    membrane[i_c - 1][j_c - 1].vz = v_cz
 
 
 def move_point():
+    """
+    makes points move
+    """
     for i in range(len(membrane)):
         for j in range(len(membrane[i])):            
-            membrane[i][j].x += membrane[i][j].Vx
-            membrane[i][j].y += membrane[i][j].Vy
-            membrane[i][j].z += membrane[i][j].Vz
+            membrane[i][j].x += membrane[i][j].vx
+            membrane[i][j].y += membrane[i][j].vy
+            membrane[i][j].z += membrane[i][j].vz
+
 
 def acceleration(parameter, l_0, i_c, j_c):
-    '''
-    l_0 is the length of the spring in the unstretched condition 
-    parameter = stiffness / mass
-    '''
+    """
+    describes the movement of points
+    :param parameter: stiffness of the string divided by mass of a point
+    :param l_0: length of an unstretched string between two points
+    :param i_c:
+    :param j_c:
+    """
     for i in range(len(membrane)):
         for j in range(len(membrane[i])):
-            '''for i in range(len(membrane)):
-                for j in range(len(membrane[i])):
-                    masiv1 = []
-                    mas = []
-                    x = membrane[i][j].x
-                    y = membrane[i][j].y
-                    z = membrane[i][j].z
-                    mas.append(x)
-                    mas.append(y)
-                    mas.append(z)
-                    masiv1.append(mas)
-                    print(masiv1)'''
             if i == 0 and j == 0:
                 c = membrane[i][j]
                 b = Point()
@@ -109,17 +92,7 @@ def acceleration(parameter, l_0, i_c, j_c):
                 r = Point()
                 r.x, r.y, r.z = c.x - l_0, c.y, c.z
                 l = membrane[i+1][j]
-                #print(membrane[i][j].y)
-                #print(membrane[i][j].y)
                 t = membrane[i][j+1]
-                '''environment = []
-                environment.append(r)
-                environment.append(l)
-                environment.append(t)
-                environment.append(b)
-                for k in range(len(environment)):
-                    print(environment[k].x, environment[k].y, environment[k].z)
-                print(c.x, c.y, c.z)'''
             elif j == 0 and i != 0 and i != len(membrane) - 1:
                 c = membrane[i][j]
                 b = Point()
@@ -127,7 +100,7 @@ def acceleration(parameter, l_0, i_c, j_c):
                 r = membrane[i-1][j]
                 l = membrane[i+1][j]
                 t = membrane[i][j+1]
-            elif  j == 0 and i == len(membrane) - 1:
+            elif j == 0 and i == len(membrane) - 1:
                 c = membrane[i][j]
                 b = Point()
                 b.x, b.y, b.z = c.x + l_0, c.y, c.z
@@ -188,94 +161,85 @@ def acceleration(parameter, l_0, i_c, j_c):
                 t = membrane[i][j+1]
                 l = membrane[i+1][j]
                 r = membrane[i-1][j]
-            environment = []
-            environment.append(r)
-            environment.append(l)
-            environment.append(t)
-            environment.append(b)
-            '''for k in range(len(environment)):
-                masiv = [environment[k].x, environment[k].y, environment[k].z]
-                print(masiv)
-            print(c.x, c.y, c.z)'''  
+
+            environment = [r, l, t, b]
+
             for k in range(len(environment)):
-                length = math.sqrt((environment[k].x - c.x) ** 2 + (environment[k].y - c.y) ** 2 + (environment[k].z - c.z)**2)
+                length = math.sqrt((environment[k].x - c.x) ** 2 +
+                                   (environment[k].y - c.y) ** 2 + (environment[k].z - c.z)**2)
                 gamma = parameter * (1 - l_0 / length)
-                c.Vx += gamma * (environment[k].x - c.x) 
-                c.Vy += gamma * (environment[k].y - c.y)
-                c.Vz += gamma * (environment[k].z - c.z)
-
-def rendering(): # отрисовка линии
-    for i in range(len(otrisovka)):
-        for j in range(0, len(otrisovka[i]) - 1):
-            canv.create_line(otrisovka[i][j].x, otrisovka[i][j].y, otrisovka[i][j+1].x, otrisovka[i][j+1].y)
-        for j in range(len(otrisovka[i])):
-            for i in range(len(otrisovka) - 1):
-                canv.create_line(otrisovka[i][j].x, otrisovka[i][j].y, otrisovka[i+1][j].x, otrisovka[i+1][j].y)
-
-'''def rendering(): # отрисовка линии
-    for i in range(len(otrisovka)):
-        for j in range(0, len(otrisovka[i]) - 1):
-            canv.create_line(otrisovka[i][j].x, otrisovka[i][j].z, otrisovka[i][j+1].x, otrisovka[i][j+1].z)
-        for j in range(len(otrisovka[i])):
-            for i in range(len(otrisovka) - 1):
-                canv.create_line(otrisovka[i][j].x, otrisovka[i][j].z, otrisovka[i+1][j].x, otrisovka[i+1][j].z)'''
+                c.vx += gamma * (environment[k].x - c.x)
+                c.vy += gamma * (environment[k].y - c.y)
+                c.vz += gamma * (environment[k].z - c.z)
 
 
-def grafic():
-    x = []
-    y = []
-    z = []
-    s = []
+def rendering():  # отрисовка линии
+    for i in range(len(membrane)):
+        for j in range(0, len(membrane[i]) - 1):
+            canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i][j + 1].x, membrane[i][j + 1].y)
+        for j in range(len(membrane[i])):
+            for i in range(len(membrane) - 1):
+                canv.create_line(membrane[i][j].x, membrane[i][j].y, membrane[i + 1][j].x, membrane[i + 1][j].y)
+
+
+def graph():
+    x = np.array([])
+    y = np.array([])
+    z = np.array([])
+    s = np.array([])
     for i in range(len(membrane)):
         for j in range(len(membrane[i])):
-            x.append(membrane[i][j].x)
-            y.append(membrane[i][j].y)
-            z.append(membrane[i][j].z)
-            s.append(2)
+            x.np.append(membrane[i][j].x)
+            y.np.append(membrane[i][j].y)
+            z.np.append(membrane[i][j].z)
+            s.np.append(2)
     print(x, y, z)
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_wireframe(x, y, z)
     plt.show()
 
+
 def rotation(ux, uy, uz):
-     for i in range(len(membrane)):
+    for i in range(len(membrane)):
         for j in range(len(membrane[i])):
-            '''
-            membrane[i][j].x = membrane[i][j].x * (np.cos(uz) * np.cos(uy) + membrane[i][j].y * np.sin(uz) * np.cos(uy) - membrane[i][j].z * np.sin(uy))
-            membrane[i][j].y = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.sin(ux) - membrane[i][j].y * np.sin(uz) * np.cos(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.sin(ux) + np.cos(uz) * np.cos(ux) + np.cos(uy) * np.sin(ux))
-            membrane[i][j].z = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.cos(ux) + membrane[i][j].y * np.sin(uz) * np.sin(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.cos(ux) - np.cos(uz) * np.sin(ux) + np.cos(uy) * np.cos(ux))
-            '''
+            """
+            membrane[i][j].x = membrane[i][j].x * (np.cos(uz) * np.cos(uy) + membrane[i][j].y * np.sin(uz) * np.cos(uy) 
+            - membrane[i][j].z * np.sin(uy))
+            membrane[i][j].y = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.sin(ux) - 
+            membrane[i][j].y * np.sin(uz) * np.cos(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.sin(ux) + 
+            np.cos(uz) * np.cos(ux) + np.cos(uy) * np.sin(ux))
+            membrane[i][j].z = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.cos(ux) + 
+            membrane[i][j].y * np.sin(uz) * np.sin(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.cos(ux)
+            - np.cos(uz) * np.sin(ux) + np.cos(uy) * np.cos(ux))
+            """
             a = Point()
             b = Point()
             c = Point()
             a.x = membrane[i][j].x
             a.y = membrane[i][j].y
             a.z = membrane[i][j].z
-            #print(membrane[i][j].x)
             
             b.x = a.x
-            b.y = np.cos(ux) * a.y - np.sin(ux)* a.z
-            b.z = np.cos(ux) * a.z + np.sin(ux)* a.y
+            b.y = np.cos(ux) * a.y - np.sin(ux) * a.z
+            b.z = np.cos(ux) * a.z + np.sin(ux) * a.y
             c.x = b.x * np.cos(uy) + b.z * np.sin(uy)
             c.y = b.y
             c.z = b.z * np.cos(uy) - b.x * np.sin(uy)
-            otrisovka[i][j].x = c.x * np.cos(uz) - c.y * np.sin(uz)
-            otrisovka[i][j].y = c.z * np.cos(uz) + c.y * np.sin(uz)
-            otrisovka[i][j].z = c.z
+            membrane[i][j].x = c.x * np.cos(uz) - c.y * np.sin(uz)
+            membrane[i][j].y = c.z * np.cos(uz) + c.y * np.sin(uz)
+            membrane[i][j].z = c.z
 
-            #print(a.x, b.x, c.x, membrane[i][j].x)
-            
-            
-            '''
+            """
             membrane[i][j].x *= (np.cos(uz) + np.sin(uz)) * (np.cos(uy) - np.sin(uy))
             membrane[i][j].y *= (np.cos(uz) - np.sin(uz)) * (np.cos(ux) + np.sin(ux))
             membrane[i][j].z *= (np.cos(uy) + np.sin(uy)) * (np.cos(ux) - np.sin(ux))
-            '''
+            """
+
 
 def modeling():
     canv.delete("all")
-    centrel(0, 0, 0.25, 4, 4)
+    central(0, 0, 0.25, 4, 4)
     move_point()
     acceleration(0.7, 90, 4, 4)
     rotation(0, 0.5, 0)
@@ -284,12 +248,10 @@ def modeling():
 
 
 membrane = []
-otrisovka = []
-line_otrisovka(7)
-zapolnenie_otrisovka(7, 7)
-line_masiv(7)
-zapolnenie_membrane(7, 7)
-entry_conditions (90, 90, 90, 0, 0, 0)
+membrane = []
+starting_lines(7)
+filling_web(7, 7)
+entry_conditions(90, 90, 90, 0, 0, 0)
 modeling()
-#grafic()
+graph()
 root.mainloop()
