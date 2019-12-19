@@ -231,7 +231,7 @@ def modeling():
     root.after(20, modeling)
 
 
-membrane = []+
+membrane = []
 starting_lines(7)
 filling_web(7, 7)
 entry_conditions(90, 90, 90, 0, 0, 0)
