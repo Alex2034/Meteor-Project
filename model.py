@@ -235,18 +235,26 @@ def rotation(ux, uy, uz):
             membrane[i][j].y = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.sin(ux) - membrane[i][j].y * np.sin(uz) * np.cos(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.sin(ux) + np.cos(uz) * np.cos(ux) + np.cos(uy) * np.sin(ux))
             membrane[i][j].z = membrane[i][j].x * (np.cos(uz) * np.sin(uy) * np.cos(ux) + membrane[i][j].y * np.sin(uz) * np.sin(ux) + membrane[i][j].z * np.sin(uz) * np.sin(uy) * np.cos(ux) - np.cos(uz) * np.sin(ux) + np.cos(uy) * np.cos(ux))
             '''
+            a = Point()
+            b = Point()
+            c = Point()
+            a.x = membrane[i][j].x
+            a.y = membrane[i][j].y
+            a.z = membrane[i][j].z
+            print(membrane[i][j].x)
             
-            membrane[i][j].x *= 1
-            membrane[i][j].y = np.cos(ux)*membrane[i][j].y - np.sin(ux)*membrane[i][j].z
-            membrane[i][j].z = np.cos(ux)*membrane[i][j].z + np.sin(ux)*membrane[i][j].y
+            b.x = a.x
+            b.y = np.cos(ux) * a.y - np.sin(ux)* a.z
+            b.z = np.cos(ux) * a.z + np.sin(ux)* a.y
+            c.x = b.x * np.cos(uy) + b.z * np.sin(uy)
+            c.y = b.y
+            c.z = b.z * np.cos(uy) - b.x * np.sin(uy)
+            membrane[i][j].x = c.x * np.cos(uz) - c.y * np.sin(uz)
+            membrane[i][j].y = c.z * np.cos(uz) + c.y * np.sin(uz)
+            membrane[i][j].z = c.z
 
-            membrane[i][j].x = membrane[i][j].x * np.cos(uy) + membrane[i][j].z * np.sin(uy)
-            membrane[i][j].y *= 1
-            membrane[i][j].z = membrane[i][j].z * np.cos(uy) - membrane[i][j].x * np.sin(uy)
-
-            membrane[i][j].x = membrane[i][j].x * np.cos(uz) - membrane[i][j].y * np.sin(uz)
-            membrane[i][j].y = membrane[i][j].z * np.cos(uz) + membrane[i][j].y * np.sin(uz)
-            membrane[i][j].z *= 1
+            print(a.x, b.x, c.x, membrane[i][j].x)
+            
             
             '''
             membrane[i][j].x *= (np.cos(uz) + np.sin(uz)) * (np.cos(uy) - np.sin(uy))
@@ -259,12 +267,13 @@ def modeling():
     centrel(0, 0, 0.25, 4, 4)
     move_point()
     acceleration(0.7, 90, 4, 4)
-    #rotation(0, 0, 0)
+    rotation(0.5, 0.5, 0.5)
     rendering()
-    #rotation(0, 0, 0)
+    rotation(-0.5, -0.5, -0.5)
     root.after(20, modeling)
 
 membrane = []
+otrisovka = []
 line_masiv(7)
 zapolnenie_membrane(7, 7)
 entry_conditions (90, 90, 90, 0, 0, 0)
