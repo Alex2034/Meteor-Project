@@ -110,10 +110,10 @@ def modeling():
     acceleration(0.05, 20, 1)
     move_ball()
     rendering()
-    root.after(500, modeling)
+    root.after(50, modeling)
 
 
 ball = []
-yes(21)
+yes(41)
 start_from(20, 10)
 modeling()
